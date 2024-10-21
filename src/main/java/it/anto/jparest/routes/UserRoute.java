@@ -7,6 +7,7 @@ package it.anto.jparest.routes;
 
 import it.anto.jparest.services.IEntityRepository;
 import it.anto.jparest.model.User;
+import it.anto.jparest.rest.filters.RequiresPermission;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Path("/user")
 @Component
+@RequiresPermission("MovMag")
 public class UserRoute {
     @Autowired
     IEntityRepository repository;

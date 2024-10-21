@@ -4,6 +4,7 @@
  */
 package it.anto.jparest.rest.filters;
 
+import com.sun.net.httpserver.HttpContext;
 import it.anto.jparest.model.User;
 import jakarta.annotation.Priority;
 import jakarta.ws.rs.Priorities;
@@ -31,11 +32,16 @@ public class GenioAuthorizationFilter implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
     
+    
+    
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        // Ottieni l'utente autenticato (simulazione)
-        User currentUser = getCurrentUser(requestContext);
 
+        // Recupera i claims dal token; 
+        String[] genioTokenPermissions = requestContext.getHeaderString("x-genio-token").split(";");
+        
+        requestContext.setProperty("sessionid","alsdkjòladkjòad" );
+        
         // Ottieni i permessi richiesti dall'annotazione
         String[] requiredPermissions = getAnnotation(requestContext);
         if (requiredPermissions == null) {
@@ -44,21 +50,21 @@ public class GenioAuthorizationFilter implements ContainerRequestFilter {
 
        
 
-        // Verifica se l'utente ha almeno uno dei permessi richiesti
-        if (!hasRequiredPermissions(currentUser, requiredPermissions)) {
+        // 
+        if (!hasRequiredPermissions(genioTokenPermissions, requiredPermissions)) {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
                     .entity("Accesso negato: permessi insufficienti")
                     .build());
         }
     }
 
-    private boolean hasRequiredPermissions(User user, String[] requiredPermissions) {
-        if (user == null || user.getPermissions() == null) {
+    private boolean hasRequiredPermissions(String[] userPermissions, String[] requiredPermissions) {
+        if (userPermissions == null || userPermissions.length == 0) {
             return false; // Se non c'è un utente autenticato o non ha permessi, accesso negato.
         }
         // Controlla se l'utente ha almeno uno dei permessi richiesti.
         for (String permission : requiredPermissions) {
-            if (user.getPermissions().contains(permission)) {
+            if (Arrays.asList(userPermissions).contains(permission)) {
                 return true;
             }
         }
@@ -66,21 +72,27 @@ public class GenioAuthorizationFilter implements ContainerRequestFilter {
     }
 
     private String[] getAnnotation(ContainerRequestContext requestContext) {
+        String[] classLevelPermissionsArray = new String[0];
+        String[] methodLevelPermissionsArray = new String[0];
         if(resourceInfo.getResourceClass().isAnnotationPresent(RequiresPermission.class))
         {
             RequiresPermission requirePerm = resourceInfo.getResourceClass().getAnnotation(RequiresPermission.class);
-            requirePerm.value();
+            classLevelPermissionsArray = requirePerm.value();
         }
         if(resourceInfo.getResourceMethod().isAnnotationPresent(RequiresPermission.class))
         {
             RequiresPermission requirePerm = resourceInfo.getResourceMethod().getAnnotation(RequiresPermission.class);
-            requirePerm.value();
+            methodLevelPermissionsArray = requirePerm.value();
         }
+        String[] permissionsArray = new String[classLevelPermissionsArray.length + methodLevelPermissionsArray.length ];
+        System.arraycopy(classLevelPermissionsArray, 0, permissionsArray, 0, classLevelPermissionsArray.length);
+        System.arraycopy(methodLevelPermissionsArray, 0, permissionsArray, classLevelPermissionsArray.length, methodLevelPermissionsArray.length);
+        return permissionsArray;
     }
 
-    private User getCurrentUser(ContainerRequestContext requestContext) {
-        // Simulazione: recupera l'utente autenticato dalla richiesta (ad esempio dal token o sessione)
-        // In una vera implementazione, recupereresti l'utente dal token JWT, sessione o database.
-        return null; //new User("john_doe", Arrays.asList("Admin", "User")); // Simula un utente con permessi "Admin" e "User"
-    }
+//    private User getCurrentUser(ContainerRequestContext requestContext) {
+//        // Simulazione: recupera l'utente autenticato dalla richiesta (ad esempio dal token o sessione)
+//        // In una vera implementazione, recupereresti l'utente dal token JWT, sessione o database.
+//        return null; //new User("john_doe", Arrays.asList("Admin", "User")); // Simula un utente con permessi "Admin" e "User"
+//    }
 }

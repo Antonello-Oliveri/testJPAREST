@@ -5,6 +5,7 @@
 package it.anto.jparest.routes;
 
 
+import it.anto.jparest.model.StockData;
 import it.anto.jparest.services.IEntityRepository;
 import it.anto.jparest.model.User;
 import it.anto.jparest.rest.filters.RequiresPermission;
@@ -12,6 +13,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Request;
+import org.jboss.resteasy.annotations.Body;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -23,16 +27,22 @@ import org.springframework.stereotype.Component;
 @Path("/stock")
 @Component
 @RequiresPermission({"Admin"})
+
 public class StockRoute {
     @Autowired
     IEntityRepository repository;
+    @Context
+    Request request;
     
    
     @GET
-    @Path("/{sku}")
-    public User getUser(@PathParam("sku") String sku )
+    @Path("/{id}")
+    @RequiresPermission({"Admin","MovMag"})
+    public StockData getUser(@PathParam("id") Long id)
     {
-        return repository.find(id, User.class);
+       
+        
+       return repository.find(id, StockData.class);
     }
    
 }
