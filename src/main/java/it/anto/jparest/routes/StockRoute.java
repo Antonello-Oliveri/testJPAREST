@@ -7,6 +7,7 @@ package it.anto.jparest.routes;
 
 import it.anto.jparest.services.IEntityRepository;
 import it.anto.jparest.model.User;
+import it.anto.jparest.rest.filters.RequiresPermission;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -19,22 +20,17 @@ import org.springframework.stereotype.Component;
  *
  * @author Anto
  */
-@Path("/user")
+@Path("/stock")
 @Component
-public class UserRoute {
+@RequiresPermission({"Admin"})
+public class StockRoute {
     @Autowired
     IEntityRepository repository;
     
-    @POST
-    public User saveUser(User user)
-    {
-        repository.createEntity(user);
-        return user;
-    }
-    
+   
     @GET
-    @Path("/{id}")
-    public User getUser(@PathParam("id") Long id )
+    @Path("/{sku}")
+    public User getUser(@PathParam("sku") String sku )
     {
         return repository.find(id, User.class);
     }

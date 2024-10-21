@@ -7,16 +7,11 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
-        <exec.mainClass>it.anto.jparest.Jparest</exec.mainClass>
+        <maven.compiler.release>21</maven.compiler.release>
+       
     </properties>
     <dependencies>
-    
-        <dependency>
-            <groupId>it-anto</groupId>
-            <artifactId>jpaproj</artifactId>
-            <version>1.0</version>
-        </dependency>
+  
  
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -37,13 +32,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.32</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>6.1.14</version> 
-        </dependency>
 
-    
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-cdi2-se</artifactId>
+            <version>3.0.0</version>  <!-- o la versione attuale -->
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
@@ -82,7 +76,7 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
+            <!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.5.2</version>
@@ -94,7 +88,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${basedir}/target/jparest-1.0.jar</file> <!-- Percorso del JAR -->
+                            <file>${basedir}/target/jparest-1.0.jar</file>  Percorso del JAR 
                             <groupId>it-anto</groupId>
                             <artifactId>jparest</artifactId>
                             <version>1.0</version>
@@ -102,7 +96,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 </project>

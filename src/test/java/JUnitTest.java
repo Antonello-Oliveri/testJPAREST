@@ -4,10 +4,10 @@
  */
 
 import it.anto.jparest.AppConfig;
-import it.anto.jpaproj.datamodel.User;
-import it.anto.jpaproj.services.EntityRepository;
-import it.anto.jpaproj.services.IEntityRepository;
+import it.anto.jparest.model.StockData;
 import it.anto.jparest.routes.UserRoute;
+import it.anto.jparest.services.IEntityRepository;
+import it.anto.jparest.model.User;
 import java.io.Console;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -24,10 +24,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  * @author Anto
  */
-//@Disabled
-public class NewEmptyJUnitTest {
+@Disabled
+public class JUnitTest {
 
-    public NewEmptyJUnitTest() {
+    public JUnitTest() {
     }
 
     @org.junit.jupiter.api.BeforeAll
@@ -49,7 +49,7 @@ public class NewEmptyJUnitTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     @Test
-    public void CreateUser() {
+    public void PopulateTables() {
 
         ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
         IEntityRepository repos = ctx.getBean(IEntityRepository.class);
@@ -57,6 +57,12 @@ public class NewEmptyJUnitTest {
         usr.setNome("AntonelloAXMMM");
         usr.setCognome("peppinoAXMMM");
         repos.createEntity(usr);
+        // Stock
+        StockData stockData = new StockData();
+        stockData.setSKU("XPA00290");
+        stockData.setStock(10.0);
+        repos.createEntity(stockData);
+       
     }
 
     @Test
@@ -69,4 +75,6 @@ public class NewEmptyJUnitTest {
         usr.setCognome("peppinoPOST");
         userRoute.saveUser(usr);
     }
+    
+    
 }
